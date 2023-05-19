@@ -50,4 +50,38 @@ export const attachRoutePaymentsCharge = (
       }
     }
   );
+
+  router.get(
+    "/charge/:id",
+    [
+      existsValidator("id"),
+    ],
+    async (req, res) => {
+      const errorsAfterValidation = getValidationErrors(req);
+      if (errorsAfterValidation) {
+        return getJsonResponse(
+          res,
+          ResponseType.BadRequest,
+          errorsAfterValidation
+        );
+      }
+
+      try {
+        const { id } = req.params;
+        const charge = await tapPaymentsService.getCharge(id);
+
+        if (!charge) {
+          return getJsonResponse(res, ResponseType.InternalServerError, {
+            id: "Something went wrong",
+          });
+        }
+
+        return getJsonResponse(res, ResponseType.Success, charge);
+      } catch (exc) {
+        return getJsonResponse(res, ResponseType.InternalServerError, {
+          error: exc,
+        });
+      }
+    }
+  );
 };

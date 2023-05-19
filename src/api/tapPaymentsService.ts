@@ -6,6 +6,8 @@ import {
   CreateChargeResponse,
   CreateTokenRequest,
   CreateTokenResponse,
+  RetrieveChargeRequest,
+  RetrieveChargeResponse,
 } from "./tapPaymentsTypes";
 import { PaymentGatewayApiConfig } from "./apiTypes";
 import cacheService from "~/cache";
@@ -74,6 +76,20 @@ export class TapPaymentsService {
       },
       this.config.apiKey
     );
+
+    if (!response.isSuccess) {
+      const errorMessage = response.error.errors
+        .map((err) => err.description)
+        .join(" ");
+      throw new Error(errorMessage);
+    }
+
+    return response.data;
+  }
+
+  async getCharge(id: string) {
+    const response = await this.restService.get<RetrieveChargeResponse, RetrieveChargeRequest>(`charges/${id}`, undefined,
+    this.config.apiKey);
 
     if (!response.isSuccess) {
       const errorMessage = response.error.errors

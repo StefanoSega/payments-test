@@ -74,3 +74,12 @@ export interface CreateChargeResponse {
     url: string;
   };
 }
+
+export interface RetrieveChargeRequest {
+  id: string;
+}
+
+// todo: not complete
+export interface RetrieveChargeResponse {
+  status: string;
+}
